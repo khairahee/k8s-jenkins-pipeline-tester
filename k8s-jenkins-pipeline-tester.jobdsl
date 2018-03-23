@@ -1,0 +1,28 @@
+def appName = 'k8s-jenkins-pipeline-tester'
+def gitProvider = 'github.com'
+def appRepo = "microdc/${appName}"
+
+pipelineJob("${appName}-build") {
+    logRotator {
+        daysToKeep(1)
+        artifactNumToKeep(1)
+    }
+    definition {
+        cpsScm {
+            scm {
+                git {
+                    remote {
+                        github("${appRepo}", 'ssh', "${gitProvider}")
+                        credentials('gitcreds')
+                    }
+                    branch('develop')
+                    extensions {
+                        cleanAfterCheckout()
+                    }
+                }
+            }
+            scriptPath('Jenkinsfile')
+        }
+    }
+}
+
