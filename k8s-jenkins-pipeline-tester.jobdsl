@@ -15,7 +15,7 @@ pipelineJob("${appName}-build") {
                         github("${appRepo}", 'ssh', "${gitProvider}")
                         credentials('gitcreds')
                     }
-                    branch('develop')
+                    branch('master')
                     extensions {
                         cleanAfterCheckout()
                     }
