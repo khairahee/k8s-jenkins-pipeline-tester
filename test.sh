@@ -6,7 +6,7 @@ set -e
 VENV_NAME=".venv"
 if ! [ -e "${VENV_NAME}/bin/activate" ]; then
   echo "Creating virtualenv..."
-  virtualenv  -p python3 ${VENV_NAME}
+  virtualenv -p python3 ${VENV_NAME}
 fi
 
 source "${VENV_NAME}/bin/activate"

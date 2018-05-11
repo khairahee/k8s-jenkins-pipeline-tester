@@ -2,27 +2,48 @@ def appName = 'k8s-jenkins-pipeline-tester'
 def gitProvider = 'github.com'
 def appRepo = "microdc/${appName}"
 
-pipelineJob("${appName}-build") {
-    logRotator {
-        daysToKeep(1)
-        artifactNumToKeep(1)
-    }
-    definition {
-        cpsScm {
-            scm {
-                git {
-                    remote {
-                        github("${appRepo}", 'ssh', "${gitProvider}")
-                        credentials('gitcreds')
-                    }
-                    branch('master')
-                    extensions {
-                        cleanAfterCheckout()
-                    }
-                }
+multibranchPipelineJob("${appName}-build") {
+  branchSources {
+    branchSource {
+      source {
+        git {
+          remote("git@${gitProvider}:${appRepo}.git")
+
+          traits {
+            submoduleOptionTrait {
+              extension {
+                disableSubmodules(false)
+                recursiveSubmodules(true)
+                trackingSubmodules(false)
+                reference(null)
+                timeout(null)
+                parentCredentials(true)
+              }
             }
-            scriptPath('Jenkinsfile')
+
+            cloneOptionTrait {
+              extension {
+                shallow(false)
+                noTags(false)
+                reference(null)
+                depth(0)
+                honorRefspec(false)
+                timeout(10)
+              }
+            }
+          }
         }
+      }
+    }
+  }
+
+  triggers {
+            periodic(2)
+        }
+
+configure {
+      def traits = it / sources / data / 'jenkins.branch.BranchSource' / source / traits
+      traits << 'jenkins.plugins.git.traits.BranchDiscoveryTrait' {}
     }
 }
 
