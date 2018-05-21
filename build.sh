@@ -16,11 +16,11 @@ log() {
 
 main () {
   check_dependency docker
-
+  export APP="k8s-jenkins-pipeline-tester"
+  export REPO="microdc"
   export VERSION="${VERSION-latest}"
   log "creating local build"
-  docker build --rm -t "microdc/k8s-jenkins-pipeline-tester:${VERSION}" .
-  docker tag "microdc/k8s-jenkins-pipeline-tester:${VERSION}" "microdc/k8s-jenkins-pipeline-tester:latest"
+  docker build --rm -t "${REPO}/${APP}:${VERSION}" -t "${REPO}/${APP}:latest".
   log "done!"
 }
 
